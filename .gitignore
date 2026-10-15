@@ -1,0 +1,22 @@
+# Dependencies and generated build output
+node_modules/
+dist/
+
+# Local environment files and secrets
+.env
+.env.*
+!.env.example
+
+# Vite and test caches
+.vite/
+coverage/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+*.log
+
+# Operating system files
+.DS_Store
+Thumbs.db

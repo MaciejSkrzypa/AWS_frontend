@@ -1,0 +1,128 @@
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowDown } from "lucide-react";
+import { createMessage, fetchMessages } from "../api/messages.js";
+import { uploadMedia } from "../api/media.js";
+import { createRoom, fetchRooms } from "../api/rooms.js";
+import ChatHeader from "../components/ChatHeader.jsx";
+import ErrorBanner from "../components/ErrorBanner.jsx";
+import MessageComposer from "../components/MessageComposer.jsx";
+import MessageList from "../components/MessageList.jsx";
+import RoomSidebar from "../components/RoomSidebar.jsx";
+
+export default function ChatView() {
+  const [rooms, setRooms] = useState([]);
+  const [activeRoom, setActiveRoom] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [draft, setDraft] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
+  const bottomRef = useRef(null);
+
+  const loadRooms = useCallback(async () => {
+    const data = await fetchRooms();
+    setRooms(data);
+    setActiveRoom((current) => current ?? data[0] ?? null);
+  }, []);
+
+  const loadMessages = useCallback(async (roomId) => {
+    if (!roomId) return;
+    setMessages(await fetchMessages(roomId));
+  }, []);
+
+  useEffect(() => {
+    loadRooms().catch((cause) => setError(cause.message));
+  }, [loadRooms]);
+
+  useEffect(() => {
+    if (!activeRoom) return;
+    loadMessages(activeRoom.id).catch((cause) => setError(cause.message));
+  }, [activeRoom, loadMessages]);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  async function sendMessage(event) {
+    event.preventDefault();
+    if (!draft.trim() || !activeRoom || busy) return;
+    setBusy(true);
+    setError("");
+    try {
+      const created = await createMessage(activeRoom.id, {
+        author: "Ty",
+        text: draft.trim(),
+      });
+      setMessages((current) => [...current, created]);
+      setDraft("");
+    } catch (cause) {
+      setError(cause.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function sendAttachment(file) {
+    if (!activeRoom) return;
+    setUploading(true);
+    setError("");
+    try {
+      const media = await uploadMedia(file);
+      const created = await createMessage(activeRoom.id, {
+        author: "Ty",
+        text: "",
+        mediaId: media.id,
+      });
+      setMessages((current) => [...current, created]);
+    } catch (cause) {
+      setError(cause.message);
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  async function addRoom(name) {
+    setError("");
+    try {
+      const room = await createRoom(name);
+      setRooms((current) => [...current, room]);
+      setActiveRoom(room);
+      return true;
+    } catch (cause) {
+      setError(cause.message);
+      return false;
+    }
+  }
+
+  return (
+    <main className="app-shell">
+      <RoomSidebar
+        rooms={rooms}
+        activeRoom={activeRoom}
+        onSelectRoom={setActiveRoom}
+        onCreateRoom={addRoom}
+      />
+      <section className="chat-panel">
+        <ChatHeader room={activeRoom} />
+        <ErrorBanner message={error} onDismiss={() => setError("")} />
+        <MessageList messages={messages} bottomRef={bottomRef} />
+        <MessageComposer
+          room={activeRoom}
+          draft={draft}
+          busy={busy}
+          uploading={uploading}
+          onDraftChange={setDraft}
+          onSend={sendMessage}
+          onUpload={sendAttachment}
+        />
+      </section>
+      <button
+        className="jump-bottom"
+        aria-label="Przewiń do najnowszych"
+        onClick={() => bottomRef.current?.scrollIntoView({ behavior: "smooth" })}
+      >
+        <ArrowDown size={16} />
+      </button>
+    </main>
+  );
+}
