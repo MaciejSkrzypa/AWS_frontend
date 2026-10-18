@@ -1,7 +1,32 @@
-import { mediaUrl } from "../api/media.js";
+import { useEffect, useState } from "react";
+import { fetchMedia } from "../api/media.js";
 
 export default function MessageAttachment({ media }) {
-  const url = mediaUrl(media.url);
+  const [url, setUrl] = useState("");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let active = true;
+    let objectUrl;
+
+    fetchMedia(media.url)
+      .then((blob) => {
+        objectUrl = URL.createObjectURL(blob);
+        if (active) setUrl(objectUrl);
+        else URL.revokeObjectURL(objectUrl);
+      })
+      .catch((cause) => {
+        if (active) setError(cause.message);
+      });
+
+    return () => {
+      active = false;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [media.url]);
+
+  if (error) return <p className="attachment-error" role="alert">{error}</p>;
+  if (!url) return <p className="attachment-loading">Pobieranie załącznika…</p>;
 
   if (media.content_type.startsWith("image/")) {
     return (

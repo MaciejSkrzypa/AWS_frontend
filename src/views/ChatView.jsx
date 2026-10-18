@@ -9,7 +9,7 @@ import MessageComposer from "../components/MessageComposer.jsx";
 import MessageList from "../components/MessageList.jsx";
 import RoomSidebar from "../components/RoomSidebar.jsx";
 
-export default function ChatView() {
+export default function ChatView({ user, onSignOut }) {
   const [rooms, setRooms] = useState([]);
   const [activeRoom, setActiveRoom] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -50,7 +50,6 @@ export default function ChatView() {
     setError("");
     try {
       const created = await createMessage(activeRoom.id, {
-        author: "Ty",
         text: draft.trim(),
       });
       setMessages((current) => [...current, created]);
@@ -69,7 +68,6 @@ export default function ChatView() {
     try {
       const media = await uploadMedia(file);
       const created = await createMessage(activeRoom.id, {
-        author: "Ty",
         text: "",
         mediaId: media.id,
       });
@@ -99,8 +97,10 @@ export default function ChatView() {
       <RoomSidebar
         rooms={rooms}
         activeRoom={activeRoom}
+        user={user}
         onSelectRoom={setActiveRoom}
         onCreateRoom={addRoom}
+        onSignOut={() => onSignOut().catch((cause) => setError(cause.message))}
       />
       <section className="chat-panel">
         <ChatHeader room={activeRoom} />
