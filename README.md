@@ -18,7 +18,7 @@ terraform -chdir=terraform output -raw cognito_user_pool_id
 terraform -chdir=terraform output -raw cognito_user_pool_client_id
 ```
 
-Frontend obsługuje rejestrację e-mail/hasło, potwierdzanie adresu kodem e-mail, logowanie, reset hasła przez kod wysłany przez Cognito oraz wylogowanie. Po zalogowaniu automatycznie dołącza access token Cognito do wywołań API i pobierania załączników.
+Frontend obsługuje rejestrację e-mail/hasło, potwierdzanie adresu kodem e-mail, logowanie, reset hasła przez kod wysłany przez Cognito oraz wylogowanie. Po zalogowaniu automatycznie dołącza access token Cognito do wywołań API. Załączniki wysyła i pobiera bezpośrednio z S3 za pomocą krótkotrwałych signed URL-i.
 
 Następnie uruchom frontend z katalogu `frontend/`:
 

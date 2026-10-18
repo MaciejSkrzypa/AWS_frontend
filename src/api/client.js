@@ -27,11 +27,3 @@ export async function request(path, options) {
   }
   return response.json();
 }
-
-export async function requestBlob(path) {
-  const response = await authorizedFetch(path);
-  if (!response.ok) {
-    await throwResponseError(response);
-  }
-  return response.blob();
-}
