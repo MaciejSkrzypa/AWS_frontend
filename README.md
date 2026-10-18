@@ -4,7 +4,23 @@ Frontend Gather jest aplikacją React zbudowaną przy użyciu Vite. Widoki korzy
 
 ## Uruchomienie lokalne
 
-Polecenia wykonaj z katalogu `frontend/`:
+Logowanie korzysta z puli Cognito utworzonej przez Terraform. Dla lokalnego Vite skopiuj `frontend/.env.example` do `frontend/.env.local`; dla Docker Compose wpisz te same wartości do `frontend/.env`:
+
+```dotenv
+VITE_COGNITO_USER_POOL_ID=...
+VITE_COGNITO_USER_POOL_CLIENT_ID=...
+```
+
+Wartości można pobrać poleceniami:
+
+```bash
+terraform -chdir=terraform output -raw cognito_user_pool_id
+terraform -chdir=terraform output -raw cognito_user_pool_client_id
+```
+
+Frontend obsługuje rejestrację e-mail/hasło, potwierdzanie adresu kodem e-mail, logowanie, reset hasła przez kod wysłany przez Cognito oraz wylogowanie. Po zalogowaniu automatycznie dołącza access token Cognito do wywołań API i pobierania załączników.
+
+Następnie uruchom frontend z katalogu `frontend/`:
 
 ```bash
 npm install
@@ -28,12 +44,14 @@ npm run preview
 
 ## Docker
 
-Obraz frontendu zawiera statyczny build Reacta serwowany przez Nginx. Aby zbudować i uruchomić go samodzielnie:
+Obraz frontendu zawiera statyczny build Reacta serwowany przez Nginx. Vite wczytuje `frontend/.env` podczas budowania obrazu. Po zmianie wartości w pliku wykonaj ponowny build (`docker compose up --build`), zwykłe `docker compose up` nie przebudowuje istniejącego obrazu.
 
 ```bash
 docker build -t gather-frontend ./frontend
 docker run --rm -p 8080:80 gather-frontend
 ```
+
+Identyfikatory Cognito są częścią konfiguracji publicznego klienta frontendowego i zostaną wbudowane w statyczny JavaScript, nie są sekretami. Nie zapisuj sekretów ani kluczy AWS w `frontend/.env`.
 
 Domyślnie Nginx przekazuje żądania `/api` do hosta `backend` na porcie `8000`, jak w konfiguracji Docker Compose projektu. Przy osobnym uruchomieniu frontendu należy zapewnić osiągalny host `backend` albo dostosować upstream w `nginx.conf` do adresu backendu.
 

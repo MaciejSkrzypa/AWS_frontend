@@ -1,8 +1,15 @@
 import { useState } from "react";
-import { ArrowUp, Hash, Plus, Search, Sparkles } from "lucide-react";
+import { ArrowUp, Hash, LogOut, Plus, Search, Sparkles } from "lucide-react";
 import Avatar from "./Avatar.jsx";
 
-export default function RoomSidebar({ rooms, activeRoom, onSelectRoom, onCreateRoom }) {
+export default function RoomSidebar({
+  rooms,
+  activeRoom,
+  user,
+  onSelectRoom,
+  onCreateRoom,
+  onSignOut,
+}) {
   const [search, setSearch] = useState("");
   const [roomName, setRoomName] = useState("");
   const [showRoomForm, setShowRoomForm] = useState(false);
@@ -95,9 +102,20 @@ export default function RoomSidebar({ rooms, activeRoom, onSelectRoom, onCreateR
         <span>Witaj w Gather</span>
       </div>
       <div className="profile">
-        <Avatar name="Ty" />
-        <div className="profile-details"><strong>Twoje konto</strong><span>Online</span></div>
-        <span className="online-dot" />
+        <Avatar name={user.email} />
+        <div className="profile-details">
+          <strong>{user.email}</strong>
+          <span>Konto Cognito</span>
+        </div>
+        <button
+          aria-label="Wyloguj"
+          className="sign-out-button"
+          onClick={onSignOut}
+          type="button"
+        >
+          <LogOut size={14} />
+          <span>Wyloguj</span>
+        </button>
       </div>
     </aside>
   );
