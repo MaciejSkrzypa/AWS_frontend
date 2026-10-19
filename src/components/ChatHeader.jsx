@@ -12,6 +12,12 @@ export default function ChatHeader({ room }) {
         </div>
       </div>
       <div className="header-actions">
+        {room?.code && (
+          <div className="room-code" aria-label={`Kod pokoju ${room.code}`}>
+            <span>KOD POKOJU</span>
+            <code>{room.code}</code>
+          </div>
+        )}
         <div className="member-stack" aria-label="3 członków online">
           <Avatar name="Maja" small />
           <Avatar name="Kuba" small />

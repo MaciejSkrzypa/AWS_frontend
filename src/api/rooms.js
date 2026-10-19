@@ -14,3 +14,11 @@ export function createRoom(name) {
     }),
   });
 }
+
+export function joinRoom(code) {
+  return request("/api/rooms/join", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ code }),
+  });
+}
