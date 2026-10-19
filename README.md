@@ -4,21 +4,18 @@ Frontend Gather jest aplikacją React zbudowaną przy użyciu Vite. Widoki korzy
 
 ## Uruchomienie lokalne
 
-Logowanie korzysta z puli Cognito utworzonej przez Terraform. Dla lokalnego Vite skopiuj `frontend/.env.example` do `frontend/.env.local`; dla Docker Compose wpisz te same wartości do `frontend/.env`:
-
-```dotenv
-VITE_COGNITO_USER_POOL_ID=...
-VITE_COGNITO_USER_POOL_CLIENT_ID=...
-```
-
-Wartości można pobrać poleceniami:
+Logowanie korzysta z puli Cognito utworzonej przez Terraform. Po wdrożeniu zasobów uruchom z katalogu głównego projektu:
 
 ```bash
-terraform -chdir=terraform output -raw cognito_user_pool_id
-terraform -chdir=terraform output -raw cognito_user_pool_client_id
+python3 scripts/sync_terraform_env.py
 ```
 
+Skrypt uzupełnia `frontend/.env` i — jeśli istnieje — `frontend/.env.local`, zachowując inne ustawienia. Identyfikatory Cognito są publiczne i nie są sekretami.
+
 Frontend obsługuje rejestrację e-mail/hasło, potwierdzanie adresu kodem e-mail, logowanie, reset hasła przez kod wysłany przez Cognito oraz wylogowanie. Po zalogowaniu automatycznie dołącza access token Cognito do wywołań API. Załączniki wysyła i pobiera bezpośrednio z S3 za pomocą krótkotrwałych signed URL-i.
+
+Kod pokoju jest widoczny w nagłówku aktywnego pokoju. Aby wejść do innego pokoju, wybierz „Dołącz kodem” w panelu bocznym i wpisz udostępniony kod.
+Wiadomości w aktywnym pokoju są odświeżane automatycznie co 4 sekundy, więc uczestnicy widzą wiadomości innych osób bez przeładowania strony.
 
 Następnie uruchom frontend z katalogu `frontend/`:
 

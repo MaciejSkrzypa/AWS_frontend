@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { ArrowUp, Hash, LogOut, Plus, Search, Sparkles } from "lucide-react";
+import {
+  ArrowUp,
+  Hash,
+  LogOut,
+  Plus,
+  Search,
+  Sparkles,
+  UsersRound,
+} from "lucide-react";
 import Avatar from "./Avatar.jsx";
 
 export default function RoomSidebar({
@@ -8,11 +16,14 @@ export default function RoomSidebar({
   user,
   onSelectRoom,
   onCreateRoom,
+  onJoinRoom,
   onSignOut,
 }) {
   const [search, setSearch] = useState("");
   const [roomName, setRoomName] = useState("");
+  const [roomCode, setRoomCode] = useState("");
   const [showRoomForm, setShowRoomForm] = useState(false);
+  const [showJoinForm, setShowJoinForm] = useState(false);
 
   async function submitRoom(event) {
     event.preventDefault();
@@ -21,6 +32,16 @@ export default function RoomSidebar({
     if (created) {
       setRoomName("");
       setShowRoomForm(false);
+    }
+  }
+
+  async function submitJoin(event) {
+    event.preventDefault();
+    if (!roomCode.trim()) return;
+    const joined = await onJoinRoom(roomCode.trim());
+    if (joined) {
+      setRoomCode("");
+      setShowJoinForm(false);
     }
   }
 
@@ -46,6 +67,14 @@ export default function RoomSidebar({
 
       <div className="sidebar-label-row">
         <span className="sidebar-label">Twoje pokoje</span>
+        <button
+          className="join-room-trigger"
+          type="button"
+          onClick={() => setShowJoinForm((visible) => !visible)}
+        >
+          <UsersRound size={14} />
+          <span>Dołącz kodem</span>
+        </button>
         <button
           className="icon-button add-room"
           aria-label="Dodaj pokój"
@@ -80,6 +109,22 @@ export default function RoomSidebar({
         </form>
       )}
 
+      {showJoinForm && (
+        <form className="room-join" onSubmit={submitJoin}>
+          <input
+            autoFocus
+            maxLength={12}
+            placeholder="Kod pokoju"
+            aria-label="Kod pokoju"
+            value={roomCode}
+            onChange={(event) => setRoomCode(event.target.value.toUpperCase())}
+          />
+          <button type="submit" aria-label="Dołącz do pokoju">
+            <ArrowUp size={15} />
+          </button>
+        </form>
+      )}
+
       <nav className="room-list" aria-label="Pokoje">
         {visibleRooms.map((room) => (
           <button
@@ -93,6 +138,14 @@ export default function RoomSidebar({
           </button>
         ))}
         {visibleRooms.length === 0 && <p className="empty-rooms">Brak pokoi</p>}
+        <button
+          className="mobile-join-trigger"
+          type="button"
+          aria-label="Dołącz do pokoju kodem"
+          onClick={() => setShowJoinForm((visible) => !visible)}
+        >
+          <UsersRound size={17} />
+        </button>
       </nav>
 
       <div className="sidebar-spacer" />

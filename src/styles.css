@@ -99,6 +99,21 @@ button { color: inherit; }
   letter-spacing: 1.15px;
   text-transform: uppercase;
 }
+.join-room-trigger {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  padding: 5px 7px;
+  border: 1px solid #ffffff24;
+  border-radius: 6px;
+  color: #c2d0c7;
+  background: transparent;
+  font-size: 9px;
+  cursor: pointer;
+}
+.join-room-trigger:hover { color: white; background: #ffffff12; }
+.mobile-join-trigger { display: none; }
 .icon-button {
   display: grid;
   width: 28px;
@@ -145,6 +160,33 @@ kbd {
   display: flex;
   gap: 4px;
   margin-top: 9px;
+}
+.room-join {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+.room-join input {
+  width: 100%;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid #6f8a7b;
+  border-radius: 6px;
+  outline: 0;
+  color: white;
+  background: #102c25;
+  font-size: 11px;
+}
+.room-join button {
+  display: grid;
+  width: 32px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 0;
+  border-radius: 6px;
+  color: #17352d;
+  background: #c8edb9;
+  cursor: pointer;
 }
 .room-create input {
   width: 100%;
@@ -282,6 +324,16 @@ kbd {
 .room-heading h1 { margin: 0 0 3px; color: #26322c; font-family: Manrope, sans-serif; font-size: 14px; font-weight: 800; letter-spacing: -.2px; }
 .room-heading p { margin: 0; color: #89928b; font-size: 10px; }
 .header-actions { display: flex; align-items: center; gap: 10px; }
+.room-code {
+  display: grid;
+  gap: 2px;
+  padding: 6px 9px;
+  border: 1px solid #e4eae1;
+  border-radius: 7px;
+  background: #f8faf6;
+}
+.room-code span { color: #829080; font-size: 7px; font-weight: 700; letter-spacing: .8px; }
+.room-code code { color: #385840; font: 700 11px "DM Sans", sans-serif; letter-spacing: 1.1px; }
 .member-stack { display: flex; padding-left: 5px; }
 .member-stack .avatar + .avatar { margin-left: -7px; }
 .member-count { display: flex; align-items: center; gap: 5px; color: #747e76; font-size: 10px; }
@@ -469,6 +521,9 @@ kbd {
   .workspace-card { width: 41px; min-height: 43px; justify-content: center; padding: 4px; }
   .workspace-icon { width: 32px; height: 32px; }
   .room-list { width: 100%; gap: 7px; margin-top: 18px; }
+  .mobile-join-trigger { display: grid; width: 42px; height: 42px; place-items: center; border: 0; border-radius: 7px; color: #b5c3ba; background: transparent; }
+  .mobile-join-trigger:hover { color: white; background: #ffffff0b; }
+  .room-join { position: fixed; z-index: 4; top: 82px; right: 12px; left: 70px; margin: 0; padding: 10px; border: 1px solid #ffffff24; border-radius: 8px; background: #17352d; box-shadow: 0 10px 28px #142a1b30; }
   .room-link { width: 42px; height: 42px; justify-content: center; padding: 0; }
   .room-link svg { width: 18px; height: 18px; }
   .room-active { background: #ffffff19; }
@@ -479,8 +534,10 @@ kbd {
   .room-heading h1 { font-size: 13px; }
   .room-heading p { max-width: 190px; overflow: hidden; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
   .header-actions { gap: 5px; }
-  .member-stack .avatar { width: 25px; height: 25px; font-size: 9px; }
-  .header-more { width: 24px; }
+  .member-stack, .header-divider, .header-more { display: none; }
+  .room-code { padding: 5px 7px; }
+  .room-code span { font-size: 6px; }
+  .room-code code { font-size: 10px; }
   .messages-scroll { padding: 18px 13px 0; }
   .welcome-card { min-height: 157px; padding: 17px; }
   .welcome-card h2 { max-width: 250px; font-size: 17px; }

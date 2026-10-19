@@ -1,13 +1,22 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowDown } from "lucide-react";
 import { createMessage, fetchMessages } from "../api/messages.js";
 import { uploadMedia } from "../api/media.js";
-import { createRoom, fetchRooms } from "../api/rooms.js";
+import { createRoom, fetchRooms, joinRoom } from "../api/rooms.js";
 import ChatHeader from "../components/ChatHeader.jsx";
 import ErrorBanner from "../components/ErrorBanner.jsx";
 import MessageComposer from "../components/MessageComposer.jsx";
 import MessageList from "../components/MessageList.jsx";
 import RoomSidebar from "../components/RoomSidebar.jsx";
+
+function mergeMessages(current, incoming) {
+  const messagesById = new Map(current.map((message) => [message.id, message]));
+  incoming.forEach((message) => messagesById.set(message.id, message));
+  return [...messagesById.values()].sort(
+    (left, right) =>
+      new Date(left.created_at).getTime() - new Date(right.created_at).getTime(),
+  );
+}
 
 export default function ChatView({ user, onSignOut }) {
   const [rooms, setRooms] = useState([]);
@@ -18,26 +27,48 @@ export default function ChatView({ user, onSignOut }) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const bottomRef = useRef(null);
+  const activeRoomId = activeRoom?.id;
 
-  const loadRooms = useCallback(async () => {
-    const data = await fetchRooms();
-    setRooms(data);
-    setActiveRoom((current) => current ?? data[0] ?? null);
-  }, []);
-
-  const loadMessages = useCallback(async (roomId) => {
-    if (!roomId) return;
-    setMessages(await fetchMessages(roomId));
+  useEffect(() => {
+    fetchRooms()
+      .then((data) => {
+        setRooms(data);
+        setActiveRoom((current) => current ?? data[0] ?? null);
+      })
+      .catch((cause) => setError(cause.message));
   }, []);
 
   useEffect(() => {
-    loadRooms().catch((cause) => setError(cause.message));
-  }, [loadRooms]);
+    if (!activeRoomId) {
+      setMessages([]);
+      return undefined;
+    }
 
-  useEffect(() => {
-    if (!activeRoom) return;
-    loadMessages(activeRoom.id).catch((cause) => setError(cause.message));
-  }, [activeRoom, loadMessages]);
+    setMessages([]);
+    let isActive = true;
+    let requestPending = false;
+    async function refreshMessages() {
+      if (requestPending) return;
+      requestPending = true;
+      try {
+        const incoming = await fetchMessages(activeRoomId);
+        if (isActive) {
+          setMessages((current) => mergeMessages(current, incoming));
+        }
+      } catch (cause) {
+        if (isActive) setError(cause.message);
+      } finally {
+        requestPending = false;
+      }
+    }
+
+    refreshMessages();
+    const interval = window.setInterval(refreshMessages, 4000);
+    return () => {
+      isActive = false;
+      window.clearInterval(interval);
+    };
+  }, [activeRoomId]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -92,6 +123,21 @@ export default function ChatView({ user, onSignOut }) {
     }
   }
 
+  async function enterRoom(code) {
+    setError("");
+    try {
+      const room = await joinRoom(code);
+      setRooms((current) =>
+        current.some((item) => item.id === room.id) ? current : [...current, room],
+      );
+      setActiveRoom(room);
+      return true;
+    } catch (cause) {
+      setError(cause.message);
+      return false;
+    }
+  }
+
   return (
     <main className="app-shell">
       <RoomSidebar
@@ -100,6 +146,7 @@ export default function ChatView({ user, onSignOut }) {
         user={user}
         onSelectRoom={setActiveRoom}
         onCreateRoom={addRoom}
+        onJoinRoom={enterRoom}
         onSignOut={() => onSignOut().catch((cause) => setError(cause.message))}
       />
       <section className="chat-panel">
