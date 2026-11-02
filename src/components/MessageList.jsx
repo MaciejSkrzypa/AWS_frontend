@@ -1,10 +1,8 @@
 import MessageItem from "./MessageItem.jsx";
-import WelcomeCard from "./WelcomeCard.jsx";
 
 export default function MessageList({ messages, bottomRef }) {
   return (
     <div className="messages-scroll">
-      <WelcomeCard />
       <div className="date-divider"><span /> <span>DZISIAJ</span> <span /></div>
       <div className="message-list" aria-live="polite">
         {messages.map((message, index) => (

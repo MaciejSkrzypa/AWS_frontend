@@ -8,17 +8,14 @@ export function createRoom(name) {
   return request("/api/rooms", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      name,
-      topic: "Nowa przestrzeń na pomysły",
-    }),
+    body: JSON.stringify({ name }),
   });
 }
 
-export function joinRoom(code) {
+export function joinRoom(id) {
   return request("/api/rooms/join", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ code }),
+    body: JSON.stringify({ id }),
   });
 }
