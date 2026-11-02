@@ -12,7 +12,7 @@ python3 scripts/sync_terraform_env.py
 
 Skrypt uzupełnia `frontend/.env` i — jeśli istnieje — `frontend/.env.local`, zachowując inne ustawienia. Identyfikatory Cognito są publiczne i nie są sekretami.
 
-Frontend obsługuje rejestrację e-mail/hasło, potwierdzanie adresu kodem e-mail, logowanie, reset hasła przez kod wysłany przez Cognito oraz wylogowanie. Po zalogowaniu automatycznie dołącza access token Cognito do wywołań API. Załączniki wysyła i pobiera bezpośrednio z S3 za pomocą krótkotrwałych signed URL-i.
+Frontend obsługuje rejestrację e-mail/hasło, potwierdzanie adresu kodem e-mail, logowanie, reset hasła przez kod wysłany przez Cognito oraz wylogowanie. Po zalogowaniu automatycznie dołącza access token Cognito do wywołań API. Backend weryfikuje token, a przy wysyłaniu wiadomości pobiera nickname bezpośrednio z Cognito. Załączniki wysyła i pobiera bezpośrednio z S3 za pomocą krótkotrwałych signed URL-i.
 
 Kod pokoju jest widoczny w nagłówku aktywnego pokoju. Aby wejść do innego pokoju, wybierz „Dołącz kodem” w panelu bocznym i wpisz udostępniony kod.
 Wiadomości w aktywnym pokoju są odświeżane automatycznie co 4 sekundy, więc uczestnicy widzą wiadomości innych osób bez przeładowania strony.

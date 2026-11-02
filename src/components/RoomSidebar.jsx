@@ -18,12 +18,14 @@ export default function RoomSidebar({
   onCreateRoom,
   onJoinRoom,
   onSignOut,
+  showRoomForm,
+  showJoinForm,
+  setShowRoomForm,
+  setShowJoinForm,
 }) {
   const [search, setSearch] = useState("");
   const [roomName, setRoomName] = useState("");
-  const [roomCode, setRoomCode] = useState("");
-  const [showRoomForm, setShowRoomForm] = useState(false);
-  const [showJoinForm, setShowJoinForm] = useState(false);
+  const [roomId, setRoomId] = useState("");
 
   async function submitRoom(event) {
     event.preventDefault();
@@ -37,10 +39,10 @@ export default function RoomSidebar({
 
   async function submitJoin(event) {
     event.preventDefault();
-    if (!roomCode.trim()) return;
-    const joined = await onJoinRoom(roomCode.trim());
+    if (!roomId.trim()) return;
+    const joined = await onJoinRoom(roomId.trim());
     if (joined) {
-      setRoomCode("");
+      setRoomId("");
       setShowJoinForm(false);
     }
   }
@@ -55,15 +57,6 @@ export default function RoomSidebar({
         <span className="brand-mark"><Sparkles size={19} strokeWidth={2.2} /></span>
         <span>gather<span className="brand-period">.</span></span>
       </a>
-
-      <div className="workspace-card">
-        <div className="workspace-icon">S</div>
-        <div className="workspace-details">
-          <strong>Studio Północ</strong>
-          <span>Przestrzeń zespołu</span>
-        </div>
-        <span className="workspace-menu">···</span>
-      </div>
 
       <div className="sidebar-label-row">
         <span className="sidebar-label">Twoje pokoje</span>
@@ -116,8 +109,8 @@ export default function RoomSidebar({
             maxLength={12}
             placeholder="Kod pokoju"
             aria-label="Kod pokoju"
-            value={roomCode}
-            onChange={(event) => setRoomCode(event.target.value.toUpperCase())}
+            value={roomId}
+            onChange={(event) => setRoomId(event.target.value.toUpperCase())}
           />
           <button type="submit" aria-label="Dołącz do pokoju">
             <ArrowUp size={15} />
@@ -137,7 +130,9 @@ export default function RoomSidebar({
             {room.id === "general" && <span className="room-unread" />}
           </button>
         ))}
-        {visibleRooms.length === 0 && <p className="empty-rooms">Brak pokoi</p>}
+        {visibleRooms.length === 0 && rooms.length > 0 && (
+          <p className="empty-rooms">Nie znaleziono pokoju</p>
+        )}
         <button
           className="mobile-join-trigger"
           type="button"
@@ -155,9 +150,9 @@ export default function RoomSidebar({
         <span>Witaj w Gather</span>
       </div>
       <div className="profile">
-        <Avatar name={user.email} />
+        <Avatar name={user.nickname || user.email} />
         <div className="profile-details">
-          <strong>{user.email}</strong>
+        <strong>{user.nickname || user.email}</strong>
           <span>Konto Cognito</span>
         </div>
         <button

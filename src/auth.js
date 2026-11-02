@@ -34,10 +34,17 @@ export async function getSignedInUser() {
       fetchAuthSession(),
     ]);
     const email = session.tokens?.idToken?.payload.email;
+    const nickname = session.tokens?.idToken?.payload.preferred_username;
 
     return {
       username: user.username,
       email: typeof email === "string" ? email : user.username,
+      nickname:
+        typeof nickname === "string" && nickname.trim()
+          ? nickname
+          : typeof email === "string"
+            ? email
+            : user.username,
     };
   } catch (error) {
     if (error.name === "UserUnAuthenticatedException") return null;
@@ -45,17 +52,17 @@ export async function getSignedInUser() {
   }
 }
 
-export async function getAccessToken() {
+export async function getApiToken() {
   const session = await fetchAuthSession();
   return session.tokens?.accessToken?.toString() ?? null;
 }
 
-export function registerWithEmail(email, password) {
+export function registerWithEmail(email, password, nickname) {
   return signUp({
     username: email,
     password,
     options: {
-      userAttributes: { email },
+      userAttributes: { email, preferred_username: nickname },
     },
   });
 }

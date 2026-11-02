@@ -1,11 +1,11 @@
-import { getAccessToken } from "../auth.js";
+import { getApiToken } from "../auth.js";
 
 export const API_URL =
   import.meta.env.VITE_API_URL ??
   (import.meta.env.DEV ? "http://localhost:8000" : "");
 
 async function authorizedFetch(path, options) {
-  const token = await getAccessToken();
+  const token = await getApiToken();
   if (!token) {
     throw new Error("Sesja wygasła. Zaloguj się ponownie.");
   }

@@ -1,13 +1,5 @@
 import { useRef } from "react";
-import {
-  AudioLines,
-  Image,
-  LoaderCircle,
-  Plus,
-  Send,
-  Smile,
-  Video,
-} from "lucide-react";
+import { LoaderCircle, Plus, Send } from "lucide-react";
 
 export default function MessageComposer({
   room,
@@ -54,16 +46,6 @@ export default function MessageComposer({
           disabled={!room}
         />
         <div className="composer-tools">
-          <button type="button" aria-label="Dodaj obraz" onClick={() => fileRef.current?.click()}>
-            <Image size={17} />
-          </button>
-          <button type="button" aria-label="Dodaj wideo" onClick={() => fileRef.current?.click()}>
-            <Video size={17} />
-          </button>
-          <button type="button" aria-label="Dodaj audio" onClick={() => fileRef.current?.click()}>
-            <AudioLines size={17} />
-          </button>
-          <button type="button" aria-label="Emoji"><Smile size={17} /></button>
           <button
             className="send-button"
             type="submit"

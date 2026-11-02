@@ -31,6 +31,7 @@ export default function AuthView({
 }) {
   const [mode, setMode] = useState("signin");
   const [email, setEmail] = useState("");
+  const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmationCode, setConfirmationCode] = useState("");
@@ -75,12 +76,17 @@ export default function AuthView({
 
   async function submitSignUp(event) {
     event.preventDefault();
+    const trimmedNickname = nickname.trim();
+    if (!trimmedNickname) {
+      setError("Podaj nickname.");
+      return;
+    }
     setError("");
     setNotice("");
     setBusy(true);
 
     try {
-      const result = await registerWithEmail(email.trim(), password);
+      const result = await registerWithEmail(email.trim(), password, trimmedNickname);
       if (result.nextStep.signUpStep === "CONFIRM_SIGN_UP") {
         setMode("confirm");
         setNotice("Wysłaliśmy kod weryfikacyjny na podany adres e-mail.");
@@ -306,6 +312,18 @@ export default function AuthView({
               className="auth-form"
               onSubmit={mode === "signup" ? submitSignUp : submitSignIn}
             >
+              {mode === "signup" && (
+                <label>
+                  Nickname
+                  <input
+                    autoComplete="nickname"
+                    maxLength={40}
+                    required
+                    value={nickname}
+                    onChange={(event) => setNickname(event.target.value)}
+                  />
+                </label>
+              )}
               <label>
                 Adres e-mail
                 <input

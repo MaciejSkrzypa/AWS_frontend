@@ -60,37 +60,14 @@ button { color: inherit; }
   border-radius: 9px;
 }
 .brand-period { color: #aee394; }
-.workspace-card {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 59px;
-  padding: 9px 10px;
-  border: 1px solid #ffffff16;
-  border-radius: 9px;
-  background: #ffffff08;
-}
-.workspace-icon {
-  display: grid;
-  width: 34px;
-  height: 34px;
-  flex: 0 0 auto;
-  place-items: center;
-  border-radius: 8px;
-  color: #2d4235;
-  background: #e6c9a9;
-  font-family: Manrope, sans-serif;
-  font-weight: 800;
-}
-.workspace-details, .profile-details { display: grid; gap: 3px; }
-.workspace-details strong, .profile-details strong { font-size: 12px; font-weight: 600; }
-.workspace-details span, .profile-details span { color: #a5b5ac; font-size: 10px; }
-.workspace-menu { margin-left: auto; color: #a8b6ae; font-size: 20px; letter-spacing: 1px; }
+.profile-details { display: grid; gap: 3px; }
+.profile-details strong { font-size: 12px; font-weight: 600; }
+.profile-details span { color: #a5b5ac; font-size: 10px; }
 .sidebar-label-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 28px 1px 11px 5px;
+  margin: 10px 1px 11px 5px;
 }
 .sidebar-label {
   color: #a7b9af;
@@ -280,7 +257,6 @@ kbd {
   font-size: 12px;
   font-weight: 700;
 }
-.avatar-small { width: 29px; height: 29px; border: 2px solid #fff; border-radius: 9px; font-size: 10px; }
 .profile-details strong { color: #edf3ef; }
 .profile-details { min-width: 0; }
 .profile-details strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -309,20 +285,54 @@ kbd {
 .sign-out-button:hover { color: white; background: #ffffff12; }
 
 .chat-panel { position: relative; display: flex; min-width: 0; flex: 1; flex-direction: column; background: #fff; }
+.no-room-state {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at 50% 40%, #f1f6ed 0, transparent 48%),
+    #fff;
+}
+.no-room-icon {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  border: 1px solid #e4ecdf;
+  border-radius: 16px;
+  color: #496047;
+  background: #f0f5ec;
+  box-shadow: 0 8px 24px #203e280a;
+}
+.no-room-eyebrow { margin: 18px 0 7px; color: #80917f; font-size: 9px; font-weight: 700; letter-spacing: 1.6px; }
+.no-room-state h1 { margin: 0; color: #26352c; font-family: Manrope, sans-serif; font-size: clamp(20px, 3vw, 27px); font-weight: 700; letter-spacing: -.6px; }
+.no-room-description { max-width: 380px; margin: 10px 0 22px; color: #78847b; font-size: 12px; line-height: 1.6; }
+.no-room-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; }
+.no-room-actions button { display: flex; min-height: 39px; align-items: center; justify-content: center; gap: 7px; padding: 0 13px; border: 1px solid #dfe7dc; border-radius: 7px; color: #405644; background: #fff; font-size: 11px; font-weight: 600; cursor: pointer; transition: background .15s, border-color .15s, transform .15s; }
+.no-room-actions button:first-child { border-color: #315b43; color: #fff; background: #315b43; }
+.no-room-actions button:hover { transform: translateY(-1px); border-color: #9db296; background: #f5f8f2; }
+.no-room-actions button:first-child:hover { border-color: #254b36; background: #254b36; }
 .chat-header {
   z-index: 1;
   display: flex;
+  flex-wrap: wrap;
   min-height: 78px;
   align-items: center;
   justify-content: space-between;
-  padding: 0 34px;
+  gap: 8px 16px;
+  padding: 12px 34px;
   border-bottom: 1px solid #edf0ec;
   background: #ffffffed;
 }
 .room-heading { display: flex; align-items: center; gap: 12px; }
 .room-heading-icon { display: grid; width: 35px; height: 35px; place-items: center; border-radius: 10px; color: #526b55; background: #edf3e9; }
-.room-heading h1 { margin: 0 0 3px; color: #26322c; font-family: Manrope, sans-serif; font-size: 14px; font-weight: 800; letter-spacing: -.2px; }
-.room-heading p { margin: 0; color: #89928b; font-size: 10px; }
+.room-heading-details { display: grid; gap: 5px; }
+.room-heading h1 { margin: 0; color: #26322c; font-family: Manrope, sans-serif; font-size: 14px; font-weight: 800; letter-spacing: -.2px; }
 .header-actions { display: flex; align-items: center; gap: 10px; }
 .room-code {
   display: grid;
@@ -334,42 +344,10 @@ kbd {
 }
 .room-code span { color: #829080; font-size: 7px; font-weight: 700; letter-spacing: .8px; }
 .room-code code { color: #385840; font: 700 11px "DM Sans", sans-serif; letter-spacing: 1.1px; }
-.member-stack { display: flex; padding-left: 5px; }
-.member-stack .avatar + .avatar { margin-left: -7px; }
-.member-count { display: flex; align-items: center; gap: 5px; color: #747e76; font-size: 10px; }
-.header-divider { width: 1px; height: 23px; margin: 0 4px; background: #e8ece7; }
-.header-more { color: #7f8981; font-size: 20px; }
+.member-count { display: flex; min-width: 39px; align-items: center; gap: 6px; color: #536a56; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.room-created { display: flex; align-items: center; gap: 5px; color: #859087; font-size: 10px; white-space: nowrap; }
+.room-created svg { color: #91a18e; }
 .messages-scroll { flex: 1; overflow: auto; padding: 30px 34px 0; scrollbar-color: #dce2db transparent; scrollbar-width: thin; }
-.welcome-card {
-  position: relative;
-  max-width: 690px;
-  min-height: 166px;
-  margin: 0 auto;
-  padding: 23px 25px;
-  overflow: hidden;
-  border: 1px solid #e7ece4;
-  border-radius: 12px;
-  background: linear-gradient(110deg, #f7f9f5 0%, #f5f8f2 62%, #eff5e9 100%);
-}
-.welcome-card::before, .welcome-card::after {
-  position: absolute;
-  right: 20px;
-  bottom: -54px;
-  width: 180px;
-  height: 180px;
-  border: 1px solid #d7e6ce7a;
-  border-radius: 50%;
-  content: "";
-}
-.welcome-card::after { right: 64px; bottom: -88px; width: 180px; height: 180px; }
-.welcome-icon { display: grid; width: 32px; height: 32px; place-items: center; margin-bottom: 12px; border-radius: 9px; color: #496047; background: #e3eddc; }
-.welcome-eyebrow { display: flex; align-items: center; gap: 6px; color: #748570; font-size: 8px; font-weight: 700; letter-spacing: 1px; }
-.welcome-eyebrow span { width: 5px; height: 5px; border-radius: 50%; background: #80a86b; }
-.welcome-card h2 { position: relative; z-index: 1; margin: 6px 0 4px; color: #2a382e; font-family: Manrope, sans-serif; font-size: 19px; font-weight: 700; letter-spacing: -.55px; }
-.welcome-card p { position: relative; z-index: 1; margin: 0; color: #788279; font-size: 10px; }
-.welcome-meta { position: relative; z-index: 1; display: flex; align-items: center; gap: 6px; margin-top: 14px; color: #79857a; font-size: 9px; }
-.welcome-meta svg { color: #8d9d87; }
-.welcome-meta span { margin: 0 2px; color: #c2c9c0; }
 .date-divider { display: flex; max-width: 690px; align-items: center; gap: 12px; margin: 28px auto 16px; color: #a4aca5; font-size: 8px; font-weight: 700; letter-spacing: 1px; }
 .date-divider span:first-child, .date-divider span:last-child { height: 1px; flex: 1; background: #edf0ec; }
 .message-list { max-width: 690px; margin: 0 auto; }
@@ -507,46 +485,42 @@ kbd {
   .messages-scroll { padding: 22px 20px 0; }
   .composer-wrap { padding-right: 20px; padding-left: 20px; }
   .header-actions { gap: 6px; }
-  .member-count, .header-divider { display: none; }
 }
 @media (max-width: 560px) {
   body { min-width: 360px; }
   .app-shell { min-height: 560px; }
   .sidebar { flex-basis: 58px; align-items: center; padding: 17px 7px 10px; }
   .brand { margin: 0 0 22px; }
-  .brand > span:last-child, .workspace-details, .workspace-menu, .sidebar-label-row, .search-box, .room-link span, .sidebar-note, .profile-details, .online-dot { display: none; }
+  .brand > span:last-child, .sidebar-label-row, .search-box, .room-link span, .sidebar-note, .profile-details, .online-dot { display: none; }
   .profile .avatar { display: none; }
   .sign-out-button { width: 34px; height: 34px; justify-content: center; margin: 0; padding: 0; }
   .sign-out-button span { display: none; }
-  .workspace-card { width: 41px; min-height: 43px; justify-content: center; padding: 4px; }
-  .workspace-icon { width: 32px; height: 32px; }
   .room-list { width: 100%; gap: 7px; margin-top: 18px; }
   .mobile-join-trigger { display: grid; width: 42px; height: 42px; place-items: center; border: 0; border-radius: 7px; color: #b5c3ba; background: transparent; }
   .mobile-join-trigger:hover { color: white; background: #ffffff0b; }
+  .room-create { position: fixed; z-index: 4; top: 82px; right: 12px; left: 70px; margin: 0; padding: 10px; border: 1px solid #ffffff24; border-radius: 8px; background: #17352d; box-shadow: 0 10px 28px #142a1b30; }
   .room-join { position: fixed; z-index: 4; top: 82px; right: 12px; left: 70px; margin: 0; padding: 10px; border: 1px solid #ffffff24; border-radius: 8px; background: #17352d; box-shadow: 0 10px 28px #142a1b30; }
   .room-link { width: 42px; height: 42px; justify-content: center; padding: 0; }
   .room-link svg { width: 18px; height: 18px; }
   .room-active { background: #ffffff19; }
   .profile { width: 100%; justify-content: center; padding: 11px 0 0; }
-  .chat-header { min-height: 68px; padding: 0 14px; }
+  .chat-header { min-height: 68px; align-items: flex-start; padding: 10px 14px; }
   .room-heading { gap: 8px; }
   .room-heading-icon { width: 31px; height: 31px; }
   .room-heading h1 { font-size: 13px; }
-  .room-heading p { max-width: 190px; overflow: hidden; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
-  .header-actions { gap: 5px; }
-  .member-stack, .header-divider, .header-more { display: none; }
+  .header-actions { justify-content: flex-end; gap: 7px; }
+  .room-heading-details { gap: 3px; }
+  .room-created { font-size: 9px; }
+  .member-count { min-width: 29px; gap: 4px; font-size: 11px; }
+  .member-count svg { width: 15px; height: 15px; }
   .room-code { padding: 5px 7px; }
   .room-code span { font-size: 6px; }
   .room-code code { font-size: 10px; }
   .messages-scroll { padding: 18px 13px 0; }
-  .welcome-card { min-height: 157px; padding: 17px; }
-  .welcome-card h2 { max-width: 250px; font-size: 17px; }
-  .welcome-card p { max-width: 250px; line-height: 1.5; }
   .composer-wrap { padding: 8px 12px 12px; }
   .composer { gap: 6px; padding-left: 7px; }
   .composer-tools { gap: 0; }
-  .composer-tools button { width: 25px; }
-  .composer-tools button:nth-child(2), .composer-tools button:nth-child(3) { display: none; }
+  .composer-tools button { width: 31px; }
   .composer > input:not(.visually-hidden) { font-size: 10px; }
   .composer-hint { font-size: 8px; }
   .jump-bottom { right: 17px; bottom: 93px; }

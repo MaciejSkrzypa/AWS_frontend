@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowDown } from "lucide-react";
+import { ArrowDown, Hash, Plus, UsersRound } from "lucide-react";
 import { createMessage, fetchMessages } from "../api/messages.js";
 import { uploadMedia } from "../api/media.js";
 import { createRoom, fetchRooms, joinRoom } from "../api/rooms.js";
@@ -20,6 +20,9 @@ function mergeMessages(current, incoming) {
 
 export default function ChatView({ user, onSignOut }) {
   const [rooms, setRooms] = useState([]);
+  const [roomsLoaded, setRoomsLoaded] = useState(false);
+  const [showRoomForm, setShowRoomForm] = useState(false);
+  const [showJoinForm, setShowJoinForm] = useState(false);
   const [activeRoom, setActiveRoom] = useState(null);
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState("");
@@ -30,12 +33,28 @@ export default function ChatView({ user, onSignOut }) {
   const activeRoomId = activeRoom?.id;
 
   useEffect(() => {
-    fetchRooms()
-      .then((data) => {
+    let isActive = true;
+    async function refreshRooms() {
+      try {
+        const data = await fetchRooms();
+        if (!isActive) return;
         setRooms(data);
-        setActiveRoom((current) => current ?? data[0] ?? null);
-      })
-      .catch((cause) => setError(cause.message));
+        setActiveRoom((current) =>
+          current ? data.find((room) => room.id === current.id) ?? current : data[0] ?? null,
+        );
+      } catch (cause) {
+        if (isActive) setError(cause.message);
+      } finally {
+        if (isActive) setRoomsLoaded(true);
+      }
+    }
+
+    refreshRooms();
+    const interval = window.setInterval(refreshRooms, 4000);
+    return () => {
+      isActive = false;
+      window.clearInterval(interval);
+    };
   }, []);
 
   useEffect(() => {
@@ -148,28 +167,75 @@ export default function ChatView({ user, onSignOut }) {
         onCreateRoom={addRoom}
         onJoinRoom={enterRoom}
         onSignOut={() => onSignOut().catch((cause) => setError(cause.message))}
+        showRoomForm={showRoomForm}
+        showJoinForm={showJoinForm}
+        setShowRoomForm={setShowRoomForm}
+        setShowJoinForm={setShowJoinForm}
       />
       <section className="chat-panel">
-        <ChatHeader room={activeRoom} />
         <ErrorBanner message={error} onDismiss={() => setError("")} />
-        <MessageList messages={messages} bottomRef={bottomRef} />
-        <MessageComposer
-          room={activeRoom}
-          draft={draft}
-          busy={busy}
-          uploading={uploading}
-          onDraftChange={setDraft}
-          onSend={sendMessage}
-          onUpload={sendAttachment}
-        />
+        {activeRoom ? (
+          <>
+            <ChatHeader room={activeRoom} />
+            <MessageList messages={messages} bottomRef={bottomRef} />
+            <MessageComposer
+              room={activeRoom}
+              draft={draft}
+              busy={busy}
+              uploading={uploading}
+              onDraftChange={setDraft}
+              onSend={sendMessage}
+              onUpload={sendAttachment}
+            />
+          </>
+        ) : (
+          <section className="no-room-state" aria-labelledby="no-room-title">
+            <div className="no-room-icon"><Hash size={22} /></div>
+            <p className="no-room-eyebrow">GATHER</p>
+            <h1 id="no-room-title">
+              {roomsLoaded ? "Wybierz miejsce na rozmowę" : "Ładowanie pokoi…"}
+            </h1>
+            {roomsLoaded && (
+              <>
+                <p className="no-room-description">
+                  Dołącz do istniejącego pokoju albo stwórz nowy, aby zacząć rozmawiać.
+                </p>
+                <div className="no-room-actions">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowRoomForm(false);
+                      setShowJoinForm(true);
+                    }}
+                  >
+                    <UsersRound size={16} />
+                    Dołącz do pokoju
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowJoinForm(false);
+                      setShowRoomForm(true);
+                    }}
+                  >
+                    <Plus size={16} />
+                    Stwórz pokój
+                  </button>
+                </div>
+              </>
+            )}
+          </section>
+        )}
       </section>
-      <button
-        className="jump-bottom"
-        aria-label="Przewiń do najnowszych"
-        onClick={() => bottomRef.current?.scrollIntoView({ behavior: "smooth" })}
-      >
-        <ArrowDown size={16} />
-      </button>
+      {activeRoom && (
+        <button
+          className="jump-bottom"
+          aria-label="Przewiń do najnowszych"
+          onClick={() => bottomRef.current?.scrollIntoView({ behavior: "smooth" })}
+        >
+          <ArrowDown size={16} />
+        </button>
+      )}
     </main>
   );
 }
