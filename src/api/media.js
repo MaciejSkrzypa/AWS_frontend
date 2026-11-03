@@ -36,3 +36,9 @@ export async function fetchMedia(url) {
   }
   return response.blob();
 }
+
+export function getMediaDownloadUrl(roomId, mediaId) {
+  return request(
+    `/api/rooms/${roomId}/messages/media/${mediaId}/download-url`,
+  );
+}
