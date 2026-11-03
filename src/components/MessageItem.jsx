@@ -2,7 +2,7 @@ import Avatar from "./Avatar.jsx";
 import MessageAttachment from "./MessageAttachment.jsx";
 import formatTime from "../utils/formatTime.js";
 
-export default function MessageItem({ message, previousMessage }) {
+export default function MessageItem({ message, previousMessage, roomId }) {
   const grouped = previousMessage?.author === message.author;
 
   return (
@@ -18,7 +18,9 @@ export default function MessageItem({ message, previousMessage }) {
           </div>
         )}
         {message.text && <p>{message.text}</p>}
-        {message.media && <MessageAttachment media={message.media} />}
+        {message.media && (
+          <MessageAttachment media={message.media} roomId={roomId} />
+        )}
       </div>
     </article>
   );

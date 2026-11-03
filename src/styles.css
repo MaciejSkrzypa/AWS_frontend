@@ -359,8 +359,14 @@ kbd {
 .message-author { color: #313b34; font-size: 11px; font-weight: 700; }
 .message-heading time { color: #a0a8a1; font-size: 9px; }
 .message-body p { margin: 0; color: #606c63; font-size: 11px; line-height: 1.6; }
-.image-attachment { display: block; width: fit-content; max-width: min(360px, 100%); margin-top: 8px; }
+.image-attachment { display: block; width: fit-content; max-width: min(360px, 100%); margin-top: 8px; padding: 0; border: 0; background: transparent; cursor: zoom-in; }
+.image-attachment:disabled { cursor: wait; }
 .image-attachment img { display: block; max-width: 100%; max-height: 260px; border: 1px solid #e9ede8; border-radius: 8px; object-fit: contain; }
+.image-attachment-placeholder { display: block; margin-top: 8px; padding: 9px 12px; border: 1px solid #e2e8e0; border-radius: 8px; color: #617460; background: #f7f9f5; font-size: 10px; cursor: pointer; }
+.image-attachment-placeholder:disabled { cursor: wait; }
+.image-preview-overlay { position: fixed; z-index: 5; inset: 0; display: grid; place-items: center; padding: 48px; background: #101713e8; cursor: zoom-out; }
+.image-preview-overlay img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.image-preview-close { position: absolute; top: 16px; right: 20px; padding: 8px 12px; border: 1px solid #ffffff55; border-radius: 6px; color: white; background: #17231dcc; cursor: pointer; }
 .media-player { display: block; width: min(360px, 100%); margin-top: 9px; }
 .empty-state { padding: 26px 0; color: #939c95; font-size: 11px; text-align: center; }
 .composer-wrap { padding: 10px 34px 17px; background: linear-gradient(#fff0, #fff 17%); }

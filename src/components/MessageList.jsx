@@ -1,6 +1,6 @@
 import MessageItem from "./MessageItem.jsx";
 
-export default function MessageList({ messages, bottomRef }) {
+export default function MessageList({ messages, bottomRef, roomId }) {
   return (
     <div className="messages-scroll">
       <div className="date-divider"><span /> <span>DZISIAJ</span> <span /></div>
@@ -10,6 +10,7 @@ export default function MessageList({ messages, bottomRef }) {
             key={message.id}
             message={message}
             previousMessage={messages[index - 1]}
+            roomId={roomId}
           />
         ))}
         {messages.length === 0 && (

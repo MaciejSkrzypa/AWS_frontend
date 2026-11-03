@@ -177,7 +177,11 @@ export default function ChatView({ user, onSignOut }) {
         {activeRoom ? (
           <>
             <ChatHeader room={activeRoom} />
-            <MessageList messages={messages} bottomRef={bottomRef} />
+            <MessageList
+              messages={messages}
+              bottomRef={bottomRef}
+              roomId={activeRoom.id}
+            />
             <MessageComposer
               room={activeRoom}
               draft={draft}
