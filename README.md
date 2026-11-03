@@ -50,7 +50,7 @@ docker run --rm -p 8080:80 gather-frontend
 
 Identyfikatory Cognito są częścią konfiguracji publicznego klienta frontendowego i zostaną wbudowane w statyczny JavaScript, nie są sekretami. Nie zapisuj sekretów ani kluczy AWS w `frontend/.env`.
 
-Domyślnie Nginx przekazuje żądania `/api` do hosta `backend` na porcie `8000`, jak w konfiguracji Docker Compose projektu. Przy osobnym uruchomieniu frontendu należy zapewnić osiągalny host `backend` albo dostosować upstream w `nginx.conf` do adresu backendu.
+Domyślnie Nginx przekazuje żądania `/api` do hosta `backend` na porcie `8000`, jak w konfiguracji Docker Compose projektu. Obraz używa szablonu konfiguracji Nginx; w Compose zmienne `BACKEND_HOST` i `BACKEND_PORT` wskazują backend kontenerowy.
 
 Jeśli frontend ma łączyć się bezpośrednio z publicznym API zamiast przez proxy Nginx, ustaw adres API w czasie budowania obrazu:
 
@@ -61,6 +61,8 @@ docker build \
 ```
 
 W takim wdrożeniu backend musi zezwalać na pochodzenie frontendu w konfiguracji CORS.
+
+Po zalogowaniu przycisk „Test alarmu CloudWatch (15 żądań)” wysyła równolegle 15 żądań do chronionego endpointu `/api/demo/slow?delay_ms=2500`, aby wygenerować próbki opóźnionej odpowiedzi i przetestować alarm.
 
 W projekcie można uruchomić oba moduły poleceniem `docker compose up --build` z katalogu głównego. Frontend będzie dostępny pod `http://localhost:8080`.
 
