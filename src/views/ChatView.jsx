@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowDown, Hash, Plus, UsersRound } from "lucide-react";
+import { ArrowDown, Hash, LoaderCircle, Plus, UsersRound } from "lucide-react";
 import { createMessage, fetchMessages } from "../api/messages.js";
 import { uploadMedia } from "../api/media.js";
 import { createRoom, fetchRooms, joinRoom } from "../api/rooms.js";
@@ -93,14 +93,15 @@ export default function ChatView({ user, onSignOut }) {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  async function sendMessage(event) {
-    event.preventDefault();
+  async function sendMessage(event, randomDelay = false) {
+    event?.preventDefault();
     if (!draft.trim() || !activeRoom || busy) return;
     setBusy(true);
     setError("");
     try {
       const created = await createMessage(activeRoom.id, {
         text: draft.trim(),
+        randomDelay,
       });
       setMessages((current) => [...current, created]);
       setDraft("");
@@ -189,6 +190,7 @@ export default function ChatView({ user, onSignOut }) {
               uploading={uploading}
               onDraftChange={setDraft}
               onSend={sendMessage}
+              onSendDelayed={(event) => sendMessage(event, true)}
               onUpload={sendAttachment}
             />
           </>
