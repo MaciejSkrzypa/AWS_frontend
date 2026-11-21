@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Activity, ArrowDown, Hash, LoaderCircle, Plus, UsersRound } from "lucide-react";
-import { triggerSlowRequest } from "../api/monitoring.js";
+import { ArrowDown, Hash, LoaderCircle, Plus, UsersRound } from "lucide-react";
 import { createMessage, fetchMessages } from "../api/messages.js";
 import { uploadMedia } from "../api/media.js";
 import { createRoom, fetchRooms, joinRoom } from "../api/rooms.js";
@@ -29,8 +28,6 @@ export default function ChatView({ user, onSignOut }) {
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [monitoringTestRunning, setMonitoringTestRunning] = useState(false);
-  const [monitoringTestResult, setMonitoringTestResult] = useState("");
   const [error, setError] = useState("");
   const bottomRef = useRef(null);
   const activeRoomId = activeRoom?.id;
@@ -96,14 +93,15 @@ export default function ChatView({ user, onSignOut }) {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  async function sendMessage(event) {
-    event.preventDefault();
+  async function sendMessage(event, randomDelay = false) {
+    event?.preventDefault();
     if (!draft.trim() || !activeRoom || busy) return;
     setBusy(true);
     setError("");
     try {
       const created = await createMessage(activeRoom.id, {
         text: draft.trim(),
+        randomDelay,
       });
       setMessages((current) => [...current, created]);
       setDraft("");
@@ -130,24 +128,6 @@ export default function ChatView({ user, onSignOut }) {
     } finally {
       setUploading(false);
     }
-  }
-
-  async function runMonitoringTest() {
-    if (monitoringTestRunning) return;
-    setMonitoringTestRunning(true);
-    setMonitoringTestResult("");
-    setError("");
-    const results = await Promise.allSettled(
-      Array.from({ length: 15 }, () => triggerSlowRequest(2500)),
-    );
-    const succeeded = results.filter((result) => result.status === "fulfilled").length;
-    setMonitoringTestResult(
-      `Wysłano ${succeeded}/15 żądań. Sprawdź alarm i metrykę ApiResponseTime w CloudWatch.`,
-    );
-    if (succeeded !== results.length) {
-      setError("Nie wszystkie żądania testowe zakończyły się powodzeniem.");
-    }
-    setMonitoringTestRunning(false);
   }
 
   async function addRoom(name) {
@@ -198,21 +178,6 @@ export default function ChatView({ user, onSignOut }) {
         {activeRoom ? (
           <>
             <ChatHeader room={activeRoom} />
-            <div className="monitoring-test">
-              <button
-                type="button"
-                onClick={runMonitoringTest}
-                disabled={monitoringTestRunning}
-              >
-                {monitoringTestRunning ? (
-                  <LoaderCircle className="spin" size={14} />
-                ) : (
-                  <Activity size={14} />
-                )}
-                Test alarmu CloudWatch (15 żądań)
-              </button>
-              {monitoringTestResult && <span role="status">{monitoringTestResult}</span>}
-            </div>
             <MessageList
               messages={messages}
               bottomRef={bottomRef}
@@ -225,6 +190,7 @@ export default function ChatView({ user, onSignOut }) {
               uploading={uploading}
               onDraftChange={setDraft}
               onSend={sendMessage}
+              onSendDelayed={(event) => sendMessage(event, true)}
               onUpload={sendAttachment}
             />
           </>

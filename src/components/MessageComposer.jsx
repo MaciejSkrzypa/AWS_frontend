@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { LoaderCircle, Plus, Send } from "lucide-react";
+import { LoaderCircle, Plus, Send, Timer } from "lucide-react";
 
 export default function MessageComposer({
   room,
@@ -8,6 +8,7 @@ export default function MessageComposer({
   uploading,
   onDraftChange,
   onSend,
+  onSendDelayed,
   onUpload,
 }) {
   const fileRef = useRef(null);
@@ -46,6 +47,16 @@ export default function MessageComposer({
           disabled={!room}
         />
         <div className="composer-tools">
+          <button
+            className="send-delayed-button"
+            type="button"
+            aria-label="Wyślij wiadomość z losowym opóźnieniem"
+            title="Wyślij z losowym opóźnieniem 1-3 s"
+            disabled={!draft.trim() || busy || !room}
+            onClick={onSendDelayed}
+          >
+            {busy ? <LoaderCircle className="spin" size={16} /> : <Timer size={16} />}
+          </button>
           <button
             className="send-button"
             type="submit"

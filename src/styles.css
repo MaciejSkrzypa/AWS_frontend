@@ -386,8 +386,10 @@ kbd {
 .composer-tools button { display: grid; width: 28px; height: 28px; place-items: center; border: 0; border-radius: 6px; color: #8e9990; background: transparent; cursor: pointer; }
 .composer-tools button:hover { color: #526b55; background: #f1f5ef; }
 .composer-tools .send-button { width: 31px; height: 31px; margin-left: 3px; color: #fff; background: #315b43; }
+.composer-tools .send-delayed-button { width: 31px; height: 31px; margin-right: 2px; color: #7e5c32; border: 1px solid #d8e0d4; background: #f9faf7; }
 .composer-tools .send-button:hover { background: #254b36; }
 .composer-tools .send-button:disabled { color: #a5b3a5; background: #eef2ed; cursor: default; }
+.composer-tools .send-delayed-button:disabled { color: #b1b8b1; border-color: #edf0ec; background: #f7f8f6; cursor: default; }
 .composer-hint { display: flex; max-width: 690px; justify-content: space-between; margin: 8px auto 0; color: #a2aaa3; font-size: 9px; }
 .composer-hint span:first-child { display: flex; align-items: center; gap: 5px; }
 .composer-hint kbd { padding: 1px 5px; border-color: #e4e9e2; color: #89948c; font-size: 9px; }

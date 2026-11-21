@@ -62,7 +62,7 @@ docker build \
 
 W takim wdrożeniu backend musi zezwalać na pochodzenie frontendu w konfiguracji CORS.
 
-Po zalogowaniu przycisk „Test alarmu CloudWatch (15 żądań)” wysyła równolegle 15 żądań do chronionego endpointu `/api/demo/slow?delay_ms=2500`, aby wygenerować próbki opóźnionej odpowiedzi i przetestować alarm.
+Po zalogowaniu obok przycisku „Wyślij” znajduje się przycisk z ikonką stopera. Wysyła tę samą wiadomość do `POST /api/rooms/{room_id}/messages?random_delay=yes`; backend losowo opóźnia odpowiedź o 1–3 sekundy, co pozwala wygenerować próbki dla alarmu CloudWatch bez dodatkowego endpointu.
 
 W projekcie można uruchomić oba moduły poleceniem `docker compose up --build` z katalogu głównego. Frontend będzie dostępny pod `http://localhost:8080`.
 
